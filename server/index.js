@@ -15,9 +15,12 @@ server.use(cors())
 const bodyParser = require('body-parser')
 server.use(bodyParser.json())
 
-server.use('/api', require('./api'))
+// const { usersRouter } = require('./users')
+// apiRouter.use('/users', usersRouter)
+const { apiRouter } = require('./api')
+server.use('/api', apiRouter)
 
 server.listen(PORT, () => {
-    console.log(`Client is connected on port ${PORT}`)
+    console.log(`Client is connected on port ${PORT}...`)
     client.connect()
 })

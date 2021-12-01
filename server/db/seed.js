@@ -1,8 +1,17 @@
 const client = require('./client')
 
-// const {
-//     // db adapter functions
-// } = require('./')
+const {
+    createUser,
+    getAllUsers,
+    getUserByUserhandle,
+    createTweet,
+    getAllTweets,
+    getAllTweetsByUserhandle,
+    getTweetByTweetId,
+    createComment,
+    getAllCommentsByTweetId,
+    getAllCommentsByUserhandle
+} = require('./')
 
 async function dropTables() {
     try {
@@ -10,8 +19,6 @@ async function dropTables() {
 
         await client.query(`
 
-        DROP TABLE IF EXISTS tweet_comments;
-        DROP TABLE IF EXISTS user_tweets;
         DROP TABLE IF EXISTS comments;
         DROP TABLE IF EXISTS tweets;
         DROP TABLE IF EXISTS users;
@@ -34,10 +41,10 @@ async function createTables() {
         
         CREATE TABLE users(
             id SERIAL PRIMARY KEY,
+            username VARCHAR(255) NOT NULL,
+            userhandle VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            name VARCHAR(255) NOT NULL,
-            "userHandle" VARCHAR(255) NOT NULL,
-            "profilePictureUrl" VARCHAR(255)
+            "PFPname" VARCHAR(255)
         );
 
         CREATE TABLE tweets(
@@ -51,19 +58,8 @@ async function createTables() {
             id SERIAL PRIMARY KEY,
             "commentAuthorId" INTEGER REFERENCES users(id),
             "tweetId" INTEGER REFERENCES tweets(id),
-            "commentContent" VARCHAR(280) NOT NULL
-        );
-
-        CREATE TABLE user_tweets(
-            id SERIAL PRIMARY KEY,
-            "userId" INTEGER REFERENCES users(id),
-            "tweetId" INTEGER REFERENCES tweets(id)
-        );
-
-        CREATE TABLE tweet_comments(
-            id SERIAL PRIMARY KEY,
-            "tweetId" INTEGER REFERENCES tweets(id),
-            "commentId" INTEGER REFERENCES comments(id)
+            "commentContent" VARCHAR(280) NOT NULL,
+            "createdAt" TIMESTAMP NOT NULL
         );
 
         `)
