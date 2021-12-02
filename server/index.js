@@ -15,8 +15,6 @@ server.use(cors())
 const bodyParser = require('body-parser')
 server.use(bodyParser.json())
 
-// const { usersRouter } = require('./users')
-// apiRouter.use('/users', usersRouter)
 const { apiRouter } = require('./api')
 server.use('/api', apiRouter)
 

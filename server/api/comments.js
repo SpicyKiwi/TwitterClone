@@ -13,18 +13,22 @@ commentsRouter.use((req, res, next) => {
     next()
 })
 
-commentsRouter.post("/", (req, res, next) => {
+commentsRouter.post("/", async (req, res, next) => {
     //create a comment on a tweet
 })
 
-commentsRouter.delete("/:commentId", (req, res, next) => {
+commentsRouter.delete("/:commentId", async (req, res, next) => {
     //delete comment by comment Id
 })
 
-commentsRouter.get("/:userhandle", (req, res, next) => {
+commentsRouter.get("/:userhandle", async (req, res, next) => {
     //get all comments by user handle
 })
 
-commentsRouter.get("/tweetId/id", (req, res, next) => {
+commentsRouter.get("/tweetId/id", async (req, res, next) => {
     //get all comments by tweet Id
 })
+
+module.exports = {
+    commentsRouter
+}

@@ -14,23 +14,35 @@ tweetsRouter.use((req, res, next) => {
     next()
 })
 
-tweetsRouter.post("/", (req, res, next) => {
-    //create tweet
+tweetsRouter.post("/", async (req, res, next) => {
+    //create tweet{ authorHandle, tweetContent }
+    const {authorHandle, tweetContent} = req.body
+    const tweetObj = {authorHandle, tweetContent}
+
+    try {
+
+        const newTweet = await createTweet(tweetObj)
+
+        res.send({ yourTweetSir: newTweet})
+
+    } catch {
+
+    }
 })
 
-tweetsRouter.delete("/:tweetId", (req, res, next) => {
+tweetsRouter.delete("/:tweetId", async (req, res, next) => {
     //delete tweet by id
 })
 
-tweetsRouter.get("/", (req, res, next) => {
+tweetsRouter.get("/", async (req, res, next) => {
     //get all the tweets
 })
 
-tweetsRouter.get("/:userhandle", (req, res, next) => {
+tweetsRouter.get("/:userhandle", async (req, res, next) => {
     //get all tweets by user's handle
 })
 
-tweetsRouter.get("/:userId/id", (req, res, next) => {
+tweetsRouter.get("/:userId/id", async (req, res, next) => {
     //get tweet by tweetId
 })
 

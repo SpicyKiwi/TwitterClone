@@ -1,18 +1,18 @@
 const client = require('./client')
 const { getUserByUserhandle } = require('./users')
 
-async function createComment(authorId, tweetId, commentContent) {
+async function createComment({authorHandle, tweetId, commentContent}) {
     try {
 
-        const { rows: timestamp } = await client.query(`
-            SELECT NOW();
-        `)
+        // const { rows: timestamp } = await client.query(`
+        //     SELECT NOW();
+        // `)
 
-        const { rows: comment } = await client.query(`
-            INSERT INTO comments("commentAuthorId", "tweetId", "commentContent", "createdAt")
-            VALUES($1, $2, $3, $4)
+        const { rows: [comment] } = await client.query(`
+            INSERT INTO comments("commentAuthorHandle", "tweetId", "commentContent")
+            VALUES($1, $2, $3)
             RETURNING *
-        `, [authorId, tweetId, commentContent, timestamp[0].now])
+        `, [authorHandle, tweetId, commentContent])
 
         return comment
         

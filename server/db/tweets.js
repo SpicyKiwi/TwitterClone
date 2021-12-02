@@ -1,17 +1,17 @@
 const client = require('./client')
 
-async function createTweet(authorId, tweetContent) {
+async function createTweet({authorHandle, tweetContent}) {
     try {
 
-        const { rows: timestamp } = await client.query(`
-            SELECT NOW();
-        `)
+        // const { rows: timestamp } = await client.query(`
+        //     SELECT NOW();
+        // `)
 
-        const { rows: tweet } = await client.query(`
-            INSERT INTO tweets("tweetAuthorId", "tweetContent", "createdAt")
-            VALUES($1, $2, $3)
+        const { rows: [tweet] } = await client.query(`
+            INSERT INTO tweets("tweetAuthorHandle", "tweetContent")
+            VALUES($1, $2)
             RETURNING *;
-        `, [authorId, tweetContent, timestamp[0].now])
+        `, [authorHandle, tweetContent])
 
         return tweet
         

@@ -1,8 +1,6 @@
 const express = require('express')
 const apiRouter = express.Router()
 
-const jwt = require('jsonwebtoken')
-const { JWT_SECRET } = process.env
 
 apiRouter.get('/', (req, res, next) => {
     const returnObj = { pulseCheck: "It's aliveeee!!"}
@@ -13,8 +11,11 @@ apiRouter.get('/', (req, res, next) => {
 const { usersRouter } = require('./users')
 apiRouter.use('/users', usersRouter)
 
+const { tweetsRouter } = require('./tweets')
+apiRouter.use('/tweets', tweetsRouter)
 
-
+const { commentsRouter } = require('./comments')
+apiRouter.use('/comments', commentsRouter)
 
 
 apiRouter.use(function (err, req, res, next) {

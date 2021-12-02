@@ -1,7 +1,7 @@
 const client = require('./client')
 const bcrypt = require('bcrypt')
 
-async function createUser(username, userhandle, password, profilePic) {
+async function createUser({username, userhandle, password, profilePic}) {
 
     if(!username || !userhandle || !password) {
         return
@@ -11,7 +11,7 @@ async function createUser(username, userhandle, password, profilePic) {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
-        const { rows: user } = await client.query(`
+        const { rows: [user] } = await client.query(`
             INSERT INTO users(username, userhandle, password, "PFPname")
             VALUES($1, $2, $3, $4)
             ON CONFLICT(userhandle) DO NOTHING
@@ -55,7 +55,7 @@ async function deleteUserByUserhandle(userhandle) {
 async function getUserByUserhandle(userhandle) {
     try {
 
-        const { rows: user } = await client.query(`
+        const { rows: [user] } = await client.query(`
             SELECT * FROM users
             WHERE userhandle=$1;
         `, [userhandle])
@@ -73,13 +73,16 @@ async function verifyUser(userhandle, password) {
     }
     try {
         const user = await getUserByUserhandle(userhandle);
+        if(!user) {
+            return;
+        }
         const hashedPassword = user.password;
         const passwordsMatch = await bcrypt.compare(password, hashedPassword);
 
         if(passwordsMatch){
             delete user.password
             return user
-        }else{
+        } else {
             return;
         }
     } catch (error) {
