@@ -1,5 +1,6 @@
 module.exports = {
     ...require('./comments'),
     ...require('./tweets'),
-    ...require('./users')
+    ...require('./users'),
+    ...require('./userlikes')
 }

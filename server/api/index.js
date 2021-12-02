@@ -17,6 +17,9 @@ apiRouter.use('/tweets', tweetsRouter)
 const { commentsRouter } = require('./comments')
 apiRouter.use('/comments', commentsRouter)
 
+const { userlikesRouter } = require('./userlikes')
+apiRouter.use('/likes', userlikesRouter)
+
 
 apiRouter.use(function (err, req, res, next) {
     console.error(err.stack)

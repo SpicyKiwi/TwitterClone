@@ -4,6 +4,7 @@ const {
     createUser,
     createTweet,
     createComment,
+    likeTweet
 } = require('./')
 
 async function dropTables() {
@@ -12,6 +13,7 @@ async function dropTables() {
 
         await client.query(`
 
+        DROP TABLE IF EXISTS userlikes;
         DROP TABLE IF EXISTS comments;
         DROP TABLE IF EXISTS tweets;
         DROP TABLE IF EXISTS users;
@@ -55,6 +57,13 @@ async function createTables() {
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
+        CREATE TABLE userlikes(
+            id SERIAL PRIMARY KEY,
+            userhandle VARCHAR(255) REFERENCES users(userhandle),
+            "tweetId" INTEGER REFERENCES tweets(id),
+            "likedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
         `)
     } catch (error) {
         console.error('Error creating tables!')
@@ -68,7 +77,7 @@ async function createInitialUsers() {
     try {
 
         const usersToCreate = [
-            {username: "Frosty", userhandle: "@SnowboyDaGod", password: "123password", profilePic: "redPFP"},
+            {username: "Frosty", userhandle: "@FrostyTheSnowman", password: "123password", profilePic: "redPFP"},
             {username: "Geralad", userhandle: "@McBoingBoing", password: "123123", profilePic: "default"},
             {username: "Neo", userhandle: "@DaOne", password: "passpasspass", profilePic: "greenPFP"}
         ]
@@ -90,9 +99,9 @@ async function createInitialTweets() {
     try {
 
         const tweetsToCreate = [
-            {authorHandle: "@SnowboyDaGod", tweetContent: "This is my first tweet!!! Excited to build this app and see what it looks like at the end!"},
-            {authorHandle: "@SnowboyDaGod", tweetContent: "Hello World!"},
-            {authorHandle: "@SnowboyDaGod", tweetContent: "Third and final tweet... gotta log off to go eat some grapes :)"},
+            {authorHandle: "@FrostyTheSnowman", tweetContent: "This is my first tweet!!! Excited to build this app and see what it looks like at the end!"},
+            {authorHandle: "@FrostyTheSnowman", tweetContent: "Hello World!"},
+            {authorHandle: "@FrostyTheSnowman", tweetContent: "Third and final tweet... gotta log off to go eat some grapes :)"},
             {authorHandle: "@McBoingBoing", tweetContent: "Mi Hoy Mi Noy!"},
             {authorHandle: "@McBoingBoing", tweetContent: "beep boop boop beep bop"},
             {authorHandle: "@DaOne", tweetContent: "Red pill... or blue pill... which do you choose? *dramatic music intensifies*"}
@@ -115,12 +124,12 @@ async function createInitialComments() {
     try {
 
         const commentsToCreate = [
-            {authorHandle: "@SnowboyDaGod", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
+            {authorHandle: "@FrostyTheSnowman", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
             {authorHandle: "@McBoingBoing", tweetId: 1, commentContent: "But that feature isn't available yet..."},
-            {authorHandle: "@SnowboyDaGod", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
-            {authorHandle: "@SnowboyDaGod", tweetId: 4, commentContent: "Spongebob?"},
-            {authorHandle: "@DaOne", tweetId: 2, commentContent: "quiet... agent anderson might hear you!"},
-            {authorHandle: "@SnowboyDaGod", tweetId: 6, commentContent: "Why not both? "}
+            {authorHandle: "@FrostyTheSnowman", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
+            {authorHandle: "@FrostyTheSnowman", tweetId: 4, commentContent: "Spongebob?"},
+            {authorHandle: "@DaOne", tweetId: 2, commentContent: "quiet... agent smith might hear you!"},
+            {authorHandle: "@FrostyTheSnowman", tweetId: 6, commentContent: "Why not both? "}
         ]
 
         const comments = await Promise.all(commentsToCreate.map(createComment))
@@ -130,6 +139,31 @@ async function createInitialComments() {
         console.log("Finished creating comments!")
     } catch (error) {
         console.error("Error while creating comments!")
+        console.error("The error: ", error)
+        throw error
+    }
+}
+
+async function createInitialLikesOnTweet() {
+    console.log("Liking the tweets...")
+    try {
+        const tweetsToLike = [
+            {userhandle: "@McBoingBoing", tweetId: 1},
+            {userhandle: "@McBoingBoing", tweetId: 2},
+            {userhandle: "@DaOne", tweetId: 2},
+            {userhandle: "@FrostyTheSnowman", tweetId: 4},
+            {userhandle: "@FrostyTheSnowman", tweetId: 5},
+            {userhandle: "@FrostyTheSnowman", tweetId: 6}
+        ]
+
+        const userlikes = await Promise.all(tweetsToLike.map(likeTweet))
+
+        console.log("Tweets have been liked!")
+        console.log(userlikes)
+        console.log("Finished liking tweets!")
+
+    } catch (error) {
+        console.error("Error trying to like a tweet!")
         console.error("The error: ", error)
         throw error
     }
@@ -145,6 +179,7 @@ async function rebuildDB() {
         await createInitialUsers()
         await createInitialTweets()
         await createInitialComments()
+        await createInitialLikesOnTweet()
 
         console.log("RebuildDB function was successful!")
     } catch (error) {

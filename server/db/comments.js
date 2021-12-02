@@ -4,14 +4,10 @@ const { getUserByUserhandle } = require('./users')
 async function createComment({authorHandle, tweetId, commentContent}) {
     try {
 
-        // const { rows: timestamp } = await client.query(`
-        //     SELECT NOW();
-        // `)
-
         const { rows: [comment] } = await client.query(`
             INSERT INTO comments("commentAuthorHandle", "tweetId", "commentContent")
             VALUES($1, $2, $3)
-            RETURNING *
+            RETURNING *;
         `, [authorHandle, tweetId, commentContent])
 
         return comment
@@ -26,7 +22,7 @@ async function deleteCommentByCommentId(commentId) {
 
         const { rows: deletedComment } = await client.query(`
             DELETE FROM comments
-            WHERE id=$1
+            WHERE id=$1;
         `, [commentId])
 
         return deletedComment
@@ -58,7 +54,7 @@ async function getAllCommentsByUserhandle(userhandle) {
 
         const { rows: allComments } = await client.query(`
             SELECT FROM comments
-            WHERE "commentAuthorId"=$1
+            WHERE "commentAuthorId"=$1;
         `, [user.id])
 
         return allComments
