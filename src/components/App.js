@@ -1,23 +1,29 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-import Homepage from "./Homepage";
-import LoginBox from "./LoginBox";
+import LandingPage from "./LandingPage";
+import Home from "./Home"
 
 function App() {
+
+    //twitter's color is #00acee
+
   return (
     <Router>
-        <div className="container">
-            <img src="images/twitter_logo.png" className="App-logo" alt="logo" />
+        <div className="main page" >
+            {/* <img src="images/twitter_logo.png" className="App-logo" alt="logo" /> */}
 
         <Switch>
 
             <Route exact path="/">
-                <Homepage />
+                <LandingPage />
             </Route>
-            <Route path="login">
-                <LoginBox />
+
+            <Route path="/home">
+                <Home />
             </Route>
+
 
         </Switch>
 
