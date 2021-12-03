@@ -20,9 +20,10 @@ async function createComment({authorHandle, tweetId, commentContent}) {
 async function deleteCommentByCommentId(commentId) {
     try {
 
-        const { rows: deletedComment } = await client.query(`
+        const { rows: [deletedComment] } = await client.query(`
             DELETE FROM comments
-            WHERE id=$1;
+            WHERE id=$1
+            RETURNING *;
         `, [commentId])
 
         return deletedComment
@@ -39,8 +40,6 @@ async function getAllCommentsByTweetId(tweetId) {
             SELECT * FROM comments
             WHERE "tweetId"=$1;
         `, [tweetId])
-
-        console.log("tweetID", tweetId, "tweetComments", tweetComments)
 
         return tweetComments
         
@@ -69,7 +68,7 @@ async function getAllCommentsByUserhandle(userhandle) {
 async function getCommentByCommentId(commentId) {
     try {
 
-        const { rows: comment } = await client.query(`
+        const { rows: [comment] } = await client.query(`
             SELECT * FROM comments
             WHERE id=$1;
         `, [commentId])

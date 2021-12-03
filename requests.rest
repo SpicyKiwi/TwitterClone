@@ -42,7 +42,7 @@ Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hb
 
 ###
 //get tweet by id
-GET http://localhost:3000/api/tweets/8/id
+GET http://localhost:3000/api/tweets/6/id
 
 
 ###
@@ -63,18 +63,18 @@ GET http://localhost:3000/api/comments/6/id
 //Create a comment on a tweet
 POST http://localhost:3000/api/comments/6
 Content-Type: application/json
-Authorization: Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
+Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
-    "userhandle": "@GrapeMan",
+    "authorHandle": "@GrapeMan",
     "commentContent": "this is a test comment... did it work?!?!"
 }
 
 ###
 //Delete a comment by comment ID
-DELETE http://localhost:3000/api/comments/:commentId
+DELETE http://localhost:3000/api/comments/7
 Content-Type: application/json
-Authorization: Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
+Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
     "userhandle": "@GrapeMan"

@@ -12,7 +12,8 @@ const {
     deleteTweetByTweetId,
     getAllTweets,
     getAllTweetsByUserhandle,
-    getTweetByTweetId
+    getTweetByTweetId,
+    getUserByUserhandle
 } = require('../db')
 
 tweetsRouter.use((req, res, next) => {
@@ -39,6 +40,10 @@ tweetsRouter.post("/", authenticateToken, async (req, res, next) => {
 
     try {
 
+        const user = await getUserByUserhandle(authorHandle)
+
+        if(!user) return res.status(401).send({ error: "You must have an account to post a tweet!"})
+
         const newTweet = await createTweet({authorHandle, tweetContent})
 
         res.status(201).send({ yourTweetSir: newTweet})
@@ -58,7 +63,7 @@ tweetsRouter.delete("/:tweetId", authenticateToken, async (req, res, next) => {
         const tweet = await getTweetByTweetId(tweetId)
 
         if(tweet.tweetAuthorHandle !== userhandle) {
-            return res.status(405).send({ error: "You cannot delete someone else's tweet... lol"})
+            return res.status(401).send({ error: "You cannot delete someone else's tweet... lol"})
         }
 
         const deletedTweet = await deleteTweetByTweetId(tweetId)
