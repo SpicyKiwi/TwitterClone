@@ -13,6 +13,7 @@ async function createTweet({authorHandle, tweetContent}) {
             RETURNING *;
         `, [authorHandle, tweetContent])
 
+
         return tweet
         
     } catch (error) {
@@ -23,7 +24,7 @@ async function createTweet({authorHandle, tweetContent}) {
 async function deleteTweetByTweetId(tweetId) {
     try {
 
-        const { rows: deletedTweet } = await client.query(`
+        const { rows: [deletedTweet] } = await client.query(`
             DELETE FROM tweets
             WHERE id=$1
             RETURNING *;
@@ -68,7 +69,7 @@ async function getAllTweetsByUserhandle(userhandle) {
 async function getTweetByTweetId(tweetId) {
     try {
 
-        const { rows: tweet } = await client.query(`
+        const { rows: [tweet] } = await client.query(`
             SELECT * FROM tweets
             WHERE id=$1;
         `, [tweetId])

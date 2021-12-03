@@ -78,13 +78,11 @@ usersRouter.post("/login", async (req, res, next) => {
             return res.status(400).send({ error: "Incorrect userhandle or password, please try again!"})
         }
 
-        console.log("verifiedUser: ", verifiedUser)
 
         const accessToken = jwt.sign(verifiedUser, process.env.ACCESS_TOKEN_SECRET)
-        res.json({ accessToken: accessToken})
 
         delete verifiedUser.id
-        res.send({ message: "You have logged in successfully!", userInfo: verifiedUser})
+        res.send({ message: "You have logged in successfully!", userInfo: verifiedUser, userToken: accessToken})
 
     } catch {
         res.status(500).send(genericError)
@@ -113,6 +111,16 @@ usersRouter.delete('/:userhandle', async (req, res, next) => {
 
 usersRouter.get("/:userhandle", async (req, res, next) => {
     //get user by user handle
+    const {userhandle} = req.params
+    try {
+
+        const user = await getUserByUserhandle(userhandle)
+
+        res.send(user)
+
+    } catch {
+        res.status(500).send(genericError)
+    }
 })
 
 usersRouter.get("/:userId/id", async (req, res, next) => {
@@ -120,5 +128,6 @@ usersRouter.get("/:userId/id", async (req, res, next) => {
 })
 
 module.exports = {
-    usersRouter
+    usersRouter,
+    authenticateToken
 }

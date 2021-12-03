@@ -36,9 +36,11 @@ async function getAllCommentsByTweetId(tweetId) {
     try {
 
         const { rows: tweetComments } = await client.query(`
-            SELECT FROM comments
+            SELECT * FROM comments
             WHERE "tweetId"=$1;
         `, [tweetId])
+
+        console.log("tweetID", tweetId, "tweetComments", tweetComments)
 
         return tweetComments
         
@@ -64,11 +66,27 @@ async function getAllCommentsByUserhandle(userhandle) {
     }
 }
 
+async function getCommentByCommentId(commentId) {
+    try {
+
+        const { rows: comment } = await client.query(`
+            SELECT * FROM comments
+            WHERE id=$1;
+        `, [commentId])
+
+        return comment
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 
 module.exports = {
     createComment,
     deleteCommentByCommentId,
     getAllCommentsByTweetId,
-    getAllCommentsByUserhandle
+    getAllCommentsByUserhandle,
+    getCommentByCommentId
 }

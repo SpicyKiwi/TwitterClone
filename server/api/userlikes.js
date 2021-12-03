@@ -6,12 +6,26 @@ const genericError = { error: "Something went wrong! Try again"}
 
 const {
     unlikeTweet,
-    likeTweet
+    likeTweet,
+    checkTweetLikes
 } = require('../db')
 
 userlikesRouter.use((req, res, next) => {
     console.log("A user is liking or unliking a tweet!")
     next()
+})
+
+userlikesRouter.get("/:tweetId", async (req, res, next) => {
+    const tweetId = req.params
+    try {
+        
+        const likesOnTheTweet = await checkTweetLikes({tweetId})
+
+        res.send({ numberOfLikes: likesOnTheTweet})
+
+    } catch {
+        res.status(500).send(genericError)
+    }
 })
 
 userlikesRouter.post("/:tweetId", async (req, res, next) => {
@@ -41,3 +55,7 @@ userlikesRouter.delete("/:tweetId", async (req, res, next) => {
         res.status(500).send(genericError)
     }
 })
+
+module.exports = {
+    userlikesRouter
+}

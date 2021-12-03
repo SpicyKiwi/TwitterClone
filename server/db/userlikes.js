@@ -40,10 +40,12 @@ async function checkTweetLikes({tweetId}) {
 
     try {
 
-        const { rows: [likes] } = await client.query(`
+        const { rows: [likesOnTweet] } = await client.query(`
             SELECT * FROM userlikes
             WHERE "tweetId"=$1;
         `, [tweetId])
+
+        return likesOnTweet
 
     } catch (error) {
         throw error
@@ -53,5 +55,6 @@ async function checkTweetLikes({tweetId}) {
 
 module.exports = {
     likeTweet,
-    unlikeTweet
+    unlikeTweet,
+    checkTweetLikes
 }
