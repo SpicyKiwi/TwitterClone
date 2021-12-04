@@ -3,6 +3,9 @@ const userlikesRouter = express.Router()
 
 const genericError = { error: "Something went wrong! Try again"}
 
+const {
+    authenticateToken
+} = require('./users')
 
 const {
     unlikeTweet,
@@ -28,7 +31,7 @@ userlikesRouter.get("/:tweetId", async (req, res, next) => {
     }
 })
 
-userlikesRouter.post("/:tweetId", async (req, res, next) => {
+userlikesRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
     const tweetId = req.params
     const userhandle = req.body
     try {
@@ -42,7 +45,7 @@ userlikesRouter.post("/:tweetId", async (req, res, next) => {
     }
 })
 
-userlikesRouter.delete("/:tweetId", async (req, res, next) => {
+userlikesRouter.delete("/:tweetId", authenticateToken, async (req, res, next) => {
     const tweetId = req.params
     const userhandle = req.body
     try{

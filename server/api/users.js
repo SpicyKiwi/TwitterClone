@@ -101,12 +101,46 @@ function authenticateToken(req, res, next) {
     })
 }
 
-usersRouter.patch('/:userhandle', async (req, res, next) => {
+usersRouter.patch('/:userhandle', authenticateToken, async (req, res, next) => {
     //edit user info
+    const { userhandle } = req.params
+    const { username, password, PFPname } = req.body
+    const updateFields = {}
+
+    if(username) updateFields.username = username
+
+    if(password) updateFields.password = password
+
+    if(PFPname) updateFields.PFPname = PFPname
+
+    try {
+
+        const updatedAccount = await editUserInfo({userhandle, updateFields})
+
+        res.send({ message: "You have successfully updated your account!", updatedAccount})
+
+    } catch {
+        res.status(500).send(genericError)
+    }
+
 })
 
-usersRouter.delete('/:userhandle', async (req, res, next) => {
+usersRouter.delete('/:userhandle', authenticateToken, async (req, res, next) => {
     //delete user by user handle
+    const {userhandle} = req.params
+    const {userhandleReq} = req.body
+    try {
+
+        if(userhandle !== userhandleReq) return res.status(401).send({ error: "You can only delete your own account!" })//
+
+        const deletedUser = await deleteUserByUserhandle(userhandle)
+
+        res.send({ message: "You have successfully deleted your account!", deletedUser})
+
+    } catch {
+        res.status(500).send({genericError, userhandle, userhandleReq})
+    }
+
 })
 
 usersRouter.get("/:userhandle", async (req, res, next) => {

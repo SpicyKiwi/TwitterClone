@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "username": "PurpleNGreen",
-    "userhandle": "@GrapeMan",
+    "userhandle": "GrapeMan",
     "password": "MyPassword",
     "profilePic": "default"
 }
@@ -15,7 +15,7 @@ POST  http://localhost:3000/api/users/login
 Content-Type: application/json
 
 {
-    "userhandle": "@GrapeMan",
+    "userhandle": "GrapeMan",
     "password": "MyPassword"
 }
 
@@ -36,13 +36,13 @@ Content-Type: application/json
 Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
-    "authorHandle": "@GrapeMan",
-    "tweetContent": "Sup guys im new here. names grape man i like grapes and i am a man"
+    "authorHandle": "GrapeMan",
+    "tweetContent": "Tweet 1"
 }
 
 ###
 //get tweet by id
-GET http://localhost:3000/api/tweets/6/id
+GET http://localhost:3000/api/tweets/7/id
 
 
 ###
@@ -52,22 +52,22 @@ Content-Type: application/json
 Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
-    "userhandle": "@GrapeMan"
+    "userhandle": "GrapeMan"
 }
 
 ###
 //Get all comments by tweet ID
-GET http://localhost:3000/api/comments/6/id
+GET http://localhost:3000/api/comments/7/id
 
 ###
 //Create a comment on a tweet
-POST http://localhost:3000/api/comments/6
+POST http://localhost:3000/api/comments/7
 Content-Type: application/json
 Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
-    "authorHandle": "@GrapeMan",
-    "commentContent": "this is a test comment... did it work?!?!"
+    "authorHandle": "GrapeMan",
+    "commentContent": "Comment 1"
 }
 
 ###
@@ -77,5 +77,15 @@ Content-Type: application/json
 Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
 
 {
-    "userhandle": "@GrapeMan"
+    "userhandle": "GrapeMan"
+}
+
+###
+//Delete a users account
+DELETE http://localhost:3000/api/users/GrapeMan
+Content-Type: application/json
+Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hbWUiOiJQdXJwbGVOR3JlZW4iLCJ1c2VyaGFuZGxlIjoiQEdyYXBlTWFuIiwiUEZQbmFtZSI6ImRlZmF1bHQiLCJpYXQiOjE2Mzg0OTQ1MDF9.BJykHeAHF9CbI6Yckp_z6-Hs7gqFpwniK67DziZaIWM
+
+{
+    "userhandleReq": "GrapeMan"
 }

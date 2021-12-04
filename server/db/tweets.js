@@ -1,5 +1,10 @@
 const client = require('./client')
 
+const { 
+    getAllCommentsByTweetId,
+    deleteCommentByCommentId 
+} = require('./comments')
+
 async function createTweet({authorHandle, tweetContent}) {
     try {
 
@@ -20,13 +25,25 @@ async function createTweet({authorHandle, tweetContent}) {
 async function deleteTweetByTweetId(tweetId) {
     try {
 
+        //Deletes all comments on tweet
+        const allComments = await getAllCommentsByTweetId(tweetId)
+
+        const commentIds = allComments.map(comment => comment.id)
+        const delComments = commentIds.map(async commentId => {
+            const deletedComments = await deleteCommentByCommentId(commentId)
+
+            return deletedComments
+        })
+
+        const deletedComments = await Promise.all(delComments)
+
         const { rows: [deletedTweet] } = await client.query(`
             DELETE FROM tweets
             WHERE id=$1
             RETURNING *;
         `, [tweetId])
 
-        return deletedTweet
+        return {deletedTweet, deletedComments}
         
     } catch (error) {
         throw error
@@ -52,7 +69,7 @@ async function getAllTweetsByUserhandle(userhandle) {
 
         const { rows: allTweetsByUser } = await client.query(`
             SELECT * FROM tweets
-            WHERE userhandle=$1;
+            WHERE "tweetAuthorHandle"=$1;
         `, [userhandle])
 
         return allTweetsByUser

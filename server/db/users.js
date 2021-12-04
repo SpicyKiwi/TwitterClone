@@ -1,6 +1,11 @@
 const client = require('./client')
 const bcrypt = require('bcrypt')
 
+const {
+    getAllTweetsByUserhandle,
+    deleteTweetByTweetId
+} = require('./tweets')
+
 async function createUser({username, userhandle, password, profilePic}) {
 
     if(!username || !userhandle || !password) {
@@ -25,12 +30,45 @@ async function createUser({username, userhandle, password, profilePic}) {
     }
 }
 
-async function editUserInfo(userhandle, fields) {
+function editUserFields(fields) {
+
+    const insert = Object.keys(fields).map((key, idx) => {
+        return `"${ key }"=$${ idx + 1 }`
+    }).joing(', ')
+
+    const select = Object.keys(fields).map(($, idx) => {
+        return `$${ idx + 1 }`
+    }).join(', ')
+
+    const vals = Object.values(fields)
+    return {insert, select, vals}
+
+}
+
+async function editUserInfo({userhandle, ...fields}) {
     try {
 
-        const { rows: updatedUser } = await client.query(`
+        const toUpdate = {}
 
-        `)
+        for (let column in fields) {
+            if (fields[column] !== undefined) toUpdate[column] = fields[column]
+        }
+
+        let userInfo
+
+        if (editUserFields(fields).insert.length > 0) {
+            const { rows: updatedUser } = await client.query(`
+                UPDATE users
+                SET ${editUserFields(toUpdate).insert}
+                WHERE userhandle=${userhandle}
+                RETURNING *;
+            `, Object.values(toUpdate))
+
+            userInfo = updatedUser
+
+            return userInfo
+
+        }
         
     } catch (error) {
         throw error
@@ -40,12 +78,27 @@ async function editUserInfo(userhandle, fields) {
 async function deleteUserByUserhandle(userhandle) {
     try {
 
-        const { rows: deletedUser } = client.query(`
+        //Delete all comments on all tweets created by user
+
+        //Delete all tweets created by user
+        const allTweets = await getAllTweetsByUserhandle(userhandle)
+
+        const tweetIds = allTweets.map(tweet => tweet.id)
+        const delTweets = tweetIds.map(async tweetId => {
+            const deletedTweets = await deleteTweetByTweetId(tweetId)
+
+            return deletedTweets
+        })
+
+        const deletedTweets = await Promise.all(delTweets)
+
+        const { rows: [deletedUser] } = await client.query(`
             DELETE FROM users
-            WHERE userhandle=$1;
+            WHERE userhandle=$1
+            RETURNING *;
         `,[userhandle])
 
-        return deletedUser
+        return {deletedUser, deletedTweets}
         
     } catch (error) {
         throw error

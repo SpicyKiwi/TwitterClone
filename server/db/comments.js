@@ -1,5 +1,4 @@
 const client = require('./client')
-const { getUserByUserhandle } = require('./users')
 
 async function createComment({authorHandle, tweetId, commentContent}) {
     try {
@@ -48,10 +47,26 @@ async function getAllCommentsByTweetId(tweetId) {
     }
 }
 
+async function _getUserByUserhandle(userhandle) {
+    //This is to avoid circular dependency
+    try {
+
+        const { rows: [user] } = await client.query(`
+            SELECT * FROM users
+            WHERE userhandle=$1;
+        `, [userhandle])
+
+        return user
+        
+    } catch (error) {
+        throw error
+    }
+}
+
 async function getAllCommentsByUserhandle(userhandle) {
     try {
 
-        const user = await getUserByUserhandle()
+        const user = await _getUserByUserhandle(userhandle)
 
         const { rows: allComments } = await client.query(`
             SELECT FROM comments
