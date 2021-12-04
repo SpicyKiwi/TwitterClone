@@ -78,8 +78,6 @@ async function editUserInfo({userhandle, ...fields}) {
 async function deleteUserByUserhandle(userhandle) {
     try {
 
-        //Delete all comments on all tweets created by user
-
         //Delete all tweets created by user
         const allTweets = await getAllTweetsByUserhandle(userhandle)
 

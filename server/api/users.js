@@ -159,6 +159,16 @@ usersRouter.get("/:userhandle", async (req, res, next) => {
 
 usersRouter.get("/:userId/id", async (req, res, next) => {
     //get user by id
+    const userId = req.params
+    try {
+
+        const user = await getUserById(userId)
+
+        res.send(user)
+
+    } catch {
+        res.status(500).send(genericError)
+    }
 })
 
 module.exports = {
