@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import LandingPage from "./LandingPage";
 import Home from "./Home"
+import Settings from "./Settings";
+import MyAccount from "./MyAccount";
 
 function App() {
 
@@ -22,6 +24,14 @@ function App() {
 
             <Route path="/home">
                 <Home />
+            </Route>
+
+            <Route path="/settings">
+                <Settings />
+            </Route>
+
+            <Route path="/my-account">
+                <MyAccount />
             </Route>
 
 
