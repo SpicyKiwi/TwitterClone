@@ -36,7 +36,7 @@ async function createTables() {
         
         CREATE TABLE users(
             id SERIAL PRIMARY KEY,
-            username VARCHAR(255) NOT NULL,
+            username VARCHAR(255) UNIQUE NOT NULL,
             userhandle VARCHAR(255) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
             "PFPname" VARCHAR(255) NOT NULL
@@ -44,8 +44,10 @@ async function createTables() {
 
         CREATE TABLE tweets(
             id SERIAL PRIMARY KEY,
+            "userName" VARCHAR(255) REFERENCES users(username),
             "tweetAuthorHandle" VARCHAR(255) REFERENCES users(userhandle),
             "tweetContent" VARCHAR(280) NOT NULL,
+            "PFPname" VARCHAR(255) NOT NULL,
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -77,9 +79,9 @@ async function createInitialUsers() {
     try {
 
         const usersToCreate = [
-            {username: "Frosty", userhandle: "FrostyTheSnowman", password: "123password", profilePic: "redPFP"},
-            {username: "Geralad", userhandle: "McBoingBoing", password: "123123", profilePic: "default"},
-            {username: "Neo", userhandle: "DaOne", password: "passpasspass", profilePic: "greenPFP"}
+            {username: "Frosty", userhandle: "frostythesnowman", password: "123password", profilePic: "redPFP"},
+            {username: "Gerald", userhandle: "mcboingboing", password: "123123123", profilePic: "defaultPFP"},
+            {username: "Neo", userhandle: "the_one", password: "passpasspass", profilePic: "greenPFP"}
         ]
 
         const users = await Promise.all(usersToCreate.map(createUser))
@@ -99,12 +101,12 @@ async function createInitialTweets() {
     try {
 
         const tweetsToCreate = [
-            {authorHandle: "FrostyTheSnowman", tweetContent: "This is my first tweet!!! Excited to build this app and see what it looks like at the end!"},
-            {authorHandle: "FrostyTheSnowman", tweetContent: "Hello World!"},
-            {authorHandle: "FrostyTheSnowman", tweetContent: "Third and final tweet... gotta log off to go eat some grapes :)"},
-            {authorHandle: "McBoingBoing", tweetContent: "Mi Hoy Mi Noy!"},
-            {authorHandle: "McBoingBoing", tweetContent: "beep boop boop beep bop"},
-            {authorHandle: "DaOne", tweetContent: "Red pill... or blue pill... which do you choose? *dramatic music intensifies*"}
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetContent: "This is my first tweet!!! Excited to build this app and see what it looks like at the end!", PFPname: "redPFP"},
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetContent: "Hello World!", PFPname: "redPFP"},
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetContent: "Third and final tweet... gotta log off to go eat some grapes :)", PFPname: "redPFP"},
+            {userName: "Gerald", authorHandle: "mcboingboing", tweetContent: "Mi Hoy Mi Noy!", PFPname: "defaultPFP"},
+            {userName: "Gerald", authorHandle: "mcboingboing", tweetContent: "beep boop boop beep bop", PFPname: "defaultPFP"},
+            {userName: "Neo", authorHandle: "the_one", tweetContent: "Red pill... or blue pill... which do you choose? *dramatic music intensifies*", PFPname: "greenPFP"}
         ]
 
         const tweets = await Promise.all(tweetsToCreate.map(createTweet))
@@ -124,12 +126,12 @@ async function createInitialComments() {
     try {
 
         const commentsToCreate = [
-            {authorHandle: "FrostyTheSnowman", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
-            {authorHandle: "McBoingBoing", tweetId: 1, commentContent: "But that feature isn't available yet..."},
-            {authorHandle: "FrostyTheSnowman", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
-            {authorHandle: "FrostyTheSnowman", tweetId: 4, commentContent: "Spongebob?"},
-            {authorHandle: "DaOne", tweetId: 2, commentContent: "quiet... agent smith might hear you!"},
-            {authorHandle: "FrostyTheSnowman", tweetId: 6, commentContent: "Why not both? "}
+            {authorHandle: "frostythesnowman", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
+            {authorHandle: "mcboingboing", tweetId: 1, commentContent: "But that feature isn't available yet..."},
+            {authorHandle: "frostythesnowman", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
+            {authorHandle: "frostythesnowman", tweetId: 4, commentContent: "Spongebob?"},
+            {authorHandle: "the_one", tweetId: 2, commentContent: "quiet... agent smith might hear you!"},
+            {authorHandle: "frostythesnowman", tweetId: 6, commentContent: "Why not both? "}
         ]
 
         const comments = await Promise.all(commentsToCreate.map(createComment))
@@ -148,12 +150,12 @@ async function createInitialLikesOnTweet() {
     console.log("Liking the tweets...")
     try {
         const tweetsToLike = [
-            {userhandle: "McBoingBoing", tweetId: 1},
-            {userhandle: "McBoingBoing", tweetId: 2},
-            {userhandle: "DaOne", tweetId: 2},
-            {userhandle: "FrostyTheSnowman", tweetId: 4},
-            {userhandle: "FrostyTheSnowman", tweetId: 5},
-            {userhandle: "FrostyTheSnowman", tweetId: 6}
+            {userhandle: "mcboingboing", tweetId: 1},
+            {userhandle: "mcboingboing", tweetId: 2},
+            {userhandle: "the_one", tweetId: 2},
+            {userhandle: "frostythesnowman", tweetId: 4},
+            {userhandle: "frostythesnowman", tweetId: 5},
+            {userhandle: "frostythesnowman", tweetId: 6}
         ]
 
         const userlikes = await Promise.all(tweetsToLike.map(likeTweet))

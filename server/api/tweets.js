@@ -36,7 +36,7 @@ tweetsRouter.get("/", async (req, res, next) => {
 
 tweetsRouter.post("/", authenticateToken, async (req, res, next) => {
     //create tweet{ authorHandle, tweetContent }
-    const {authorHandle, tweetContent} = req.body
+    const {authorHandle, tweetContent, userName, PFPname} = req.body
 
     try {
 
@@ -44,7 +44,7 @@ tweetsRouter.post("/", authenticateToken, async (req, res, next) => {
 
         if(!user) return res.status(401).send({ error: "You must have an account to post a tweet!"})
 
-        const newTweet = await createTweet({authorHandle, tweetContent})
+        const newTweet = await createTweet({authorHandle, tweetContent, userName, PFPname})
 
         res.status(201).send({ yourTweetSir: newTweet})
 

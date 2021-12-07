@@ -5,15 +5,16 @@ const {
     deleteCommentByCommentId 
 } = require('./comments')
 
-async function createTweet({authorHandle, tweetContent}) {
+async function createTweet({userName, authorHandle, tweetContent, PFPname}) {
     try {
 
         const { rows: [tweet] } = await client.query(`
-            INSERT INTO tweets("tweetAuthorHandle", "tweetContent")
-            VALUES($1, $2)
+            INSERT INTO tweets("userName", "tweetAuthorHandle", "tweetContent", "PFPname")
+            VALUES($1, $2, $3, $4)
             RETURNING *;
-        `, [authorHandle, tweetContent])
+        `, [userName, authorHandle, tweetContent, PFPname])
 
+        console.log("username: ", userName, "authorhandle: ", authorHandle, "tweetContent: ", tweetContent, "pfpname: ", PFPname)
 
         return tweet
         
@@ -42,6 +43,10 @@ async function deleteTweetByTweetId(tweetId) {
             WHERE id=$1
             RETURNING *;
         `, [tweetId])
+
+        console.log("Tweet Id entered", tweetId)
+
+        console.log("deleted tweet: ", deletedTweet)
 
         return {deletedTweet, deletedComments}
         
@@ -86,6 +91,8 @@ async function getTweetByTweetId(tweetId) {
             SELECT * FROM tweets
             WHERE id=$1;
         `, [tweetId])
+
+        console.log(tweet)
 
         return tweet
         

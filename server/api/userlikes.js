@@ -10,21 +10,48 @@ const {
 const {
     unlikeTweet,
     likeTweet,
-    checkTweetLikes
+    checkTweetLikes,
+    getLikedTweetsByUserhandle,
+    getAllLikesForTweets
 } = require('../db')
 
 userlikesRouter.use((req, res, next) => {
-    console.log("A user is liking or unliking a tweet!")
+    console.log("A request has been made to /users!")
     next()
 })
 
-userlikesRouter.get("/:tweetId", async (req, res, next) => {
-    const tweetId = req.params
+userlikesRouter.get("/", async (req, res, next) => {
+    try {
+
+        const allLikesOnTweets = await getAllLikesForTweets()
+
+        res.send(allLikesOnTweets)
+
+    } catch {
+        res.status(500).send(genericError)
+    }
+})
+
+userlikesRouter.get("/:tweetId/tweet", async (req, res, next) => {
+    const {tweetId} = req.params
     try {
         
         const likesOnTheTweet = await checkTweetLikes({tweetId})
 
-        res.send({ numberOfLikes: likesOnTheTweet})
+        res.send(likesOnTheTweet)
+
+    } catch {
+        res.status(500).send(genericError)
+    }
+})
+
+userlikesRouter.get("/:userhandle", async (req, res, next) => {
+    const {userhandle} = req.params
+    try {
+
+        const likedTweets = await getLikedTweetsByUserhandle(userhandle)
+        
+        res.send(likedTweets)
 
     } catch {
         res.status(500).send(genericError)
@@ -32,8 +59,8 @@ userlikesRouter.get("/:tweetId", async (req, res, next) => {
 })
 
 userlikesRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
-    const tweetId = req.params
-    const userhandle = req.body
+    const {tweetId} = req.params
+    const {userhandle} = req.body
     try {
 
         const likedTweet = await likeTweet({userhandle, tweetId})
@@ -46,8 +73,8 @@ userlikesRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
 })
 
 userlikesRouter.delete("/:tweetId", authenticateToken, async (req, res, next) => {
-    const tweetId = req.params
-    const userhandle = req.body
+    const {tweetId} = req.params
+    const {userhandle} = req.body
     try{
 
         const unlikedTweet = await unlikeTweet({userhandle, tweetId})

@@ -4,8 +4,16 @@ import LoginBox from "./LoginBox";
 import SignUpBox from "./SignUpBox"
 
 
-export default function LandingPage() {
+export default function LandingPage(props) {
 
+    const {
+        BASE_URL,
+        setUserToken,
+        setIsLoggedIn,
+        setUsername,
+        setpfpname,
+        setUserhandle
+    } = props
     const [haveAnAccount, setHaveAnAccount] = useState(true)
 
     //#ededed is opposite of #131313
@@ -26,7 +34,23 @@ export default function LandingPage() {
                     <Nav.Link eventKey="link-2" onClick={() => setHaveAnAccount(false)}>Sign Up</Nav.Link>
             </Nav>
 
-            {haveAnAccount ? <LoginBox /> : <SignUpBox />}
+            {haveAnAccount ? 
+            <LoginBox 
+            BASE_URL={BASE_URL}
+            setUserToken={setUserToken}
+            setIsLoggedIn={setIsLoggedIn}
+            setUsername={setUsername}
+            setpfpname={setpfpname}
+            setUserhandle={setUserhandle}
+            /> : 
+            <SignUpBox 
+            BASE_URL={BASE_URL}
+            setUserToken={setUserToken}
+            setIsLoggedIn={setIsLoggedIn}
+            setUsername={setUsername}
+            setpfpname={setpfpname}
+            setUserhandle={setUserhandle}
+            />}
             
 
             </div>

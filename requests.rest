@@ -89,3 +89,7 @@ Authorization: BEARER eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwidXNlcm5hb
 {
     "userhandleReq": "GrapeMan"
 }
+
+###
+//get users liked tweets
+GET http://localhost:3000/api/likes/frostythesnowman

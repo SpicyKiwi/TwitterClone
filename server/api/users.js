@@ -57,9 +57,13 @@ usersRouter.post("/register", async (req, res, next) => {
             return res.status(400).send({ error: "This account handle is already taken, please choose a different one."})
         }
 
+
         const registeredUser = await createUser(userObj)
+
+        const accessToken = jwt.sign(registeredUser, process.env.ACCESS_TOKEN_SECRET)
+
         delete registeredUser.password
-        res.status(201).send({ message: "Account registration successful!", userInfo: registeredUser })
+        res.status(201).send({ message: "Account registration successful!", userInfo: registeredUser, token: accessToken })
         
 
     } catch {
@@ -82,7 +86,7 @@ usersRouter.post("/login", async (req, res, next) => {
         const accessToken = jwt.sign(verifiedUser, process.env.ACCESS_TOKEN_SECRET)
 
         delete verifiedUser.id
-        res.send({ message: "You have logged in successfully!", userInfo: verifiedUser, userToken: accessToken})
+        res.send({ message: "You have logged in successfully!", userInfo: verifiedUser, token: accessToken})
 
     } catch {
         res.status(500).send(genericError)
@@ -159,7 +163,7 @@ usersRouter.get("/:userhandle", async (req, res, next) => {
 
 usersRouter.get("/:userId/id", async (req, res, next) => {
     //get user by id
-    const userId = req.params
+    const {userId} = req.params
     try {
 
         const user = await getUserById(userId)

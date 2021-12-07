@@ -3,12 +3,14 @@ const client = require('./client')
 async function likeTweet({userhandle, tweetId}) {
 
     try {
-
+        console.log("userhandle: ", userhandle)
+        console.log("tweetId: ", tweetId)
         const { rows: [likedTweet] } = await client.query(`
             INSERT INTO userlikes(userhandle, "tweetId")
             VALUES($1, $2)
             RETURNING *;
         `, [userhandle, tweetId])
+        console.log("liked tweet: ", likedTweet)
 
         return likedTweet
         
@@ -40,7 +42,7 @@ async function checkTweetLikes({tweetId}) {
 
     try {
 
-        const { rows: [likesOnTweet] } = await client.query(`
+        const { rows: likesOnTweet } = await client.query(`
             SELECT * FROM userlikes
             WHERE "tweetId"=$1;
         `, [tweetId])
@@ -53,8 +55,43 @@ async function checkTweetLikes({tweetId}) {
 
 }
 
+async function getLikedTweetsByUserhandle(userhandle) {
+
+    try {
+
+        const { rows: likedTweets } = await client.query(`
+            SELECT * FROM userlikes
+            WHERE userhandle=$1;
+        `, [userhandle])
+
+        return likedTweets
+
+    } catch (error) {
+        throw error
+    }
+
+}
+
+async function getAllLikesForTweets() {
+
+    try {
+
+        const { rows: likesOnTweets } = await client.query(`
+            SELECT * FROM userlikes;
+        `) 
+
+        return likesOnTweets
+
+    } catch (error) {
+        throw error
+    }
+    
+}
+
 module.exports = {
     likeTweet,
     unlikeTweet,
-    checkTweetLikes
+    checkTweetLikes,
+    getLikedTweetsByUserhandle,
+    getAllLikesForTweets
 }
