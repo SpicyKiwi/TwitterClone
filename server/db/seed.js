@@ -54,6 +54,7 @@ async function createTables() {
         CREATE TABLE comments(
             id SERIAL PRIMARY KEY,
             "commentAuthorHandle" VARCHAR(255) REFERENCES users(userhandle),
+            "userName" VARCHAR(255) REFERENCES users(username),
             "tweetId" INTEGER REFERENCES tweets(id),
             "commentContent" VARCHAR(280) NOT NULL,
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -106,7 +107,8 @@ async function createInitialTweets() {
             {userName: "Frosty", authorHandle: "frostythesnowman", tweetContent: "Third and final tweet... gotta log off to go eat some grapes :)", PFPname: "redPFP"},
             {userName: "Gerald", authorHandle: "mcboingboing", tweetContent: "Mi Hoy Mi Noy!", PFPname: "defaultPFP"},
             {userName: "Gerald", authorHandle: "mcboingboing", tweetContent: "beep boop boop beep bop", PFPname: "defaultPFP"},
-            {userName: "Neo", authorHandle: "the_one", tweetContent: "Red pill... or blue pill... which do you choose? *dramatic music intensifies*", PFPname: "greenPFP"}
+            {userName: "Neo", authorHandle: "the_one", tweetContent: "Red pill... or blue pill... which do you choose? *dramatic music intensifies*", PFPname: "greenPFP"},
+            {userName: "Neo", authorHandle: "the_one", tweetContent: "We must wake up the others... like this post and leave a comment if you agree!", PFPname: "greenPFP"}
         ]
 
         const tweets = await Promise.all(tweetsToCreate.map(createTweet))
@@ -126,12 +128,12 @@ async function createInitialComments() {
     try {
 
         const commentsToCreate = [
-            {authorHandle: "frostythesnowman", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
-            {authorHandle: "mcboingboing", tweetId: 1, commentContent: "But that feature isn't available yet..."},
-            {authorHandle: "frostythesnowman", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
-            {authorHandle: "frostythesnowman", tweetId: 4, commentContent: "Spongebob?"},
-            {authorHandle: "the_one", tweetId: 2, commentContent: "quiet... agent smith might hear you!"},
-            {authorHandle: "frostythesnowman", tweetId: 6, commentContent: "Why not both? "}
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetId: 1, commentContent: "Don't forget to follow me guys!"},
+            {userName: "Gerald", authorHandle: "mcboingboing", tweetId: 1, commentContent: "But that feature isn't available yet..."},
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetId: 1, commentContent: "uhhhhhh........ darn nvm then"},
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetId: 4, commentContent: "Spongebob?"},
+            {userName: "Neo", authorHandle: "the_one", tweetId: 2, commentContent: "quiet... agent smith might hear you!"},
+            {userName: "Frosty", authorHandle: "frostythesnowman", tweetId: 6, commentContent: "Why not both? "}
         ]
 
         const comments = await Promise.all(commentsToCreate.map(createComment))

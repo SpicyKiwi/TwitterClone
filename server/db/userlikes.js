@@ -38,7 +38,7 @@ async function unlikeTweet({userhandle, tweetId}) {
 
 }
 
-async function checkTweetLikes({tweetId}) {
+async function checkTweetLikes(tweetId) {
 
     try {
 
@@ -88,10 +88,29 @@ async function getAllLikesForTweets() {
     
 }
 
+async function removeLikeByLikeId(likeId) {
+
+    try {
+
+        const { rows: removedLikes } = await client.query(`
+            DELETE FROM userlikes
+            WHERE id=$1
+            RETURNING *;
+        `, [likeId])  
+
+        return removedLikes
+
+    } catch (error) {
+        throw error
+    }
+
+}
+
 module.exports = {
     likeTweet,
     unlikeTweet,
     checkTweetLikes,
     getLikedTweetsByUserhandle,
-    getAllLikesForTweets
+    getAllLikesForTweets,
+    removeLikeByLikeId
 }

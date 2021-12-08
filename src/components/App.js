@@ -18,6 +18,8 @@ function App() {
 
     //twitter's color is #00acee
 
+    
+
   return (
     <Router>
         <div className="main page" style={{backgroundColor: "#131313"}}>
@@ -30,12 +32,12 @@ function App() {
                 <Redirect to="/home" />
                 :
                 <LandingPage 
-                BASE_URL={BASE_URL}
-                setUserToken={setUserToken}
-                setIsLoggedIn={setIsLoggedIn}
-                setUsername={setUsername}
-                setpfpname={setpfpname}
-                setUserhandle={setUserhandle}
+                    BASE_URL={BASE_URL}
+                    setUserToken={setUserToken}
+                    setIsLoggedIn={setIsLoggedIn}
+                    setUsername={setUsername}
+                    setpfpname={setpfpname}
+                    setUserhandle={setUserhandle}
                 />
                 }
 
@@ -44,21 +46,22 @@ function App() {
             <Route path="/home">
                 {userToken ? 
                 <Home 
-                BASE_URL={BASE_URL}
-                userToken={userToken}
-                isLoggedIn={isLoggedIn}
-                setUserToken={setUserToken}
-                setIsLoggedIn={setIsLoggedIn}
-                username={username}
-                setUsername={setUsername}
-                pfpname={pfpname}
-                userhandle={userhandle}
+                    BASE_URL={BASE_URL}
+                    userToken={userToken}
+                    isLoggedIn={isLoggedIn}
+                    setUserToken={setUserToken}
+                    setIsLoggedIn={setIsLoggedIn}
+                    username={username}
+                    setUsername={setUsername}
+                    pfpname={pfpname}
+                    userhandle={userhandle}
                 />
                 :
                 <Redirect to="/" />
                 }
 
             </Route>
+
 
             <Route path="/settings">
                 <Settings 

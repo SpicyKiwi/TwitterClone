@@ -1,13 +1,13 @@
 const client = require('./client')
 
-async function createComment({authorHandle, tweetId, commentContent}) {
+async function createComment({userName, authorHandle, tweetId, commentContent}) {
     try {
 
         const { rows: [comment] } = await client.query(`
-            INSERT INTO comments("commentAuthorHandle", "tweetId", "commentContent")
-            VALUES($1, $2, $3)
+            INSERT INTO comments("userName", "commentAuthorHandle", "tweetId", "commentContent")
+            VALUES($1, $2, $3, $4)
             RETURNING *;
-        `, [authorHandle, tweetId, commentContent])
+        `, [userName, authorHandle, tweetId, commentContent])
 
         return comment
         
@@ -95,6 +95,20 @@ async function getCommentByCommentId(commentId) {
     }
 }
 
+async function getAllComments() {
+    try {
+
+        const { rows: comments } = await client.query(`
+            SELECT * FROM comments;
+        `)  
+
+        return comments
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 
 module.exports = {
@@ -102,5 +116,6 @@ module.exports = {
     deleteCommentByCommentId,
     getAllCommentsByTweetId,
     getAllCommentsByUserhandle,
-    getCommentByCommentId
+    getCommentByCommentId,
+    getAllComments
 }

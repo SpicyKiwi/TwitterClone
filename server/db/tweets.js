@@ -5,6 +5,11 @@ const {
     deleteCommentByCommentId 
 } = require('./comments')
 
+const {
+    checkTweetLikes,
+    removeLikeByLikeId
+} = require('./userlikes')
+
 async function createTweet({userName, authorHandle, tweetContent, PFPname}) {
     try {
 
@@ -38,6 +43,17 @@ async function deleteTweetByTweetId(tweetId) {
 
         const deletedComments = await Promise.all(delComments)
 
+        const allLikesOnTweet = await checkTweetLikes(tweetId)
+
+        const likeIds = allLikesOnTweet.map(like => like.id)
+        const deleteLikes = likeIds.map(async likeId => {
+            const deletedLikes = await removeLikeByLikeId(likeId)
+
+            return deletedLikes
+        })
+
+        const removedLikes = await Promise.all(deleteLikes)
+
         const { rows: [deletedTweet] } = await client.query(`
             DELETE FROM tweets
             WHERE id=$1
@@ -48,7 +64,7 @@ async function deleteTweetByTweetId(tweetId) {
 
         console.log("deleted tweet: ", deletedTweet)
 
-        return {deletedTweet, deletedComments}
+        return {deletedTweet, deletedComments, removedLikes}
         
     } catch (error) {
         throw error

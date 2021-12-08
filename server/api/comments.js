@@ -15,7 +15,8 @@ const {
     getAllCommentsByTweetId,
     getCommentByCommentId,
     getUserByUserhandle,
-    getTweetByTweetId
+    getTweetByTweetId,
+    getAllComments
 } = require("../db")
 
 commentsRouter.use((req, res, next) => {
@@ -23,17 +24,30 @@ commentsRouter.use((req, res, next) => {
     next()
 })
 
+commentsRouter.get("/", async (req, res, next) => {
+    try {
+
+        const allComments = await getAllComments()
+
+        res.send(allComments)
+
+    } catch {
+        res.status(500).send(genericError)
+    }
+
+})
+
 commentsRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
     //create a comment on a tweet
     const {tweetId} = req.params
-    const {authorHandle, commentContent} = req.body
+    const {userName, authorHandle, commentContent} = req.body
     try {
 
         const user = await getUserByUserhandle(authorHandle)
 
         if(!user) return res.status(401).send({ error: "You must have an account to post a comment!"})
 
-        const createdComment = await createComment({authorHandle, tweetId, commentContent})
+        const createdComment = await createComment({userName, authorHandle, tweetId, commentContent})
 
         res.status(201).send({ message: "You have created a comment on a tweet!", createdComment })
 
@@ -51,7 +65,7 @@ commentsRouter.delete("/:commentId", authenticateToken, async (req, res, next) =
         const comment = await getCommentByCommentId(commentId)
         const tweetId = comment.tweetId
         const tweet = await getTweetByTweetId(tweetId)
-        if(comment.commentAuthorHandle !== userhandle && tweet.tweetAuthorHandle !== userhandle) return res.status(401).send({ error: "You can only delete your own comments or comments on your tweet!"})
+        if(tweet.tweetAuthorHandle !== userhandle && comment.commentAuthorHandle !== userhandle) return res.status(401).send({ error: "You can only delete your own comments or comments on your tweet!"})
 
         const deletedComment = await deleteCommentByCommentId(commentId)
 

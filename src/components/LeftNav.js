@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Image from 'react-bootstrap/Image'
 import Alert from 'react-bootstrap/Alert'
 import InputGroup from 'react-bootstrap/InputGroup'
@@ -23,7 +23,6 @@ export default function LeftNav(props) {
     const [showLogout, setShowLogout] = useState(false)
     const [showNewTweet, setShowNewTweet] = useState(false)
     const [tweet, setTweet] = useState('')
-    const history = useHistory()
     
 
 
@@ -37,7 +36,6 @@ export default function LeftNav(props) {
         setUsername('')
         setIsLoggedIn(false)
         localStorage.clear()
-        history.push("/")
     }
 
     function renderLogOutBtn() {
