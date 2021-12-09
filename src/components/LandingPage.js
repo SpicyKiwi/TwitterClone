@@ -16,7 +16,6 @@ export default function LandingPage(props) {
     } = props
     const [haveAnAccount, setHaveAnAccount] = useState(true)
 
-    //#ededed is opposite of #131313
 
     return (
 
@@ -42,6 +41,7 @@ export default function LandingPage(props) {
             setUsername={setUsername}
             setpfpname={setpfpname}
             setUserhandle={setUserhandle}
+            
             /> : 
             <SignUpBox 
             BASE_URL={BASE_URL}
@@ -59,14 +59,3 @@ export default function LandingPage(props) {
         
     )
 }
-
-
-/* <div style={{textAlign: "center"}} >
-
-<header style={{backgroundColor: "#161616", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontSize: "calc(10px + 2vmin)", color: "white"}}>
-
-    <img src="images/twitter_logo.png" style={{height: "40vmin"}} alt="logo" />
-
-</header>
-
-</div> */

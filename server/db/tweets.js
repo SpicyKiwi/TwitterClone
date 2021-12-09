@@ -19,8 +19,6 @@ async function createTweet({userName, authorHandle, tweetContent, PFPname}) {
             RETURNING *;
         `, [userName, authorHandle, tweetContent, PFPname])
 
-        console.log("username: ", userName, "authorhandle: ", authorHandle, "tweetContent: ", tweetContent, "pfpname: ", PFPname)
-
         return tweet
         
     } catch (error) {
@@ -31,7 +29,7 @@ async function createTweet({userName, authorHandle, tweetContent, PFPname}) {
 async function deleteTweetByTweetId(tweetId) {
     try {
 
-        //Deletes all comments on tweet
+        //Deletes all comments and likes on tweet
         const allComments = await getAllCommentsByTweetId(tweetId)
 
         const commentIds = allComments.map(comment => comment.id)
@@ -59,10 +57,6 @@ async function deleteTweetByTweetId(tweetId) {
             WHERE id=$1
             RETURNING *;
         `, [tweetId])
-
-        console.log("Tweet Id entered", tweetId)
-
-        console.log("deleted tweet: ", deletedTweet)
 
         return {deletedTweet, deletedComments, removedLikes}
         
@@ -107,8 +101,6 @@ async function getTweetByTweetId(tweetId) {
             SELECT * FROM tweets
             WHERE id=$1;
         `, [tweetId])
-
-        console.log(tweet)
 
         return tweet
         

@@ -12,10 +12,11 @@ const {
     getAllUsers,
     createUser,
     verifyUser,
-    editUserInfo,
+    editUsername,
     deleteUserByUserhandle,
     getUserByUserhandle,
-    getUserById
+    getUserByUsername,
+    editPFPname
 } = require('../db')
 
 usersRouter.use((req, res, next) => {
@@ -67,12 +68,12 @@ usersRouter.post("/register", async (req, res, next) => {
         
 
     } catch {
-
+        res.status(500).send(genericError)
     }
 })
 
 usersRouter.post("/login", async (req, res, next) => {
-    //verify user
+    //verifies and logs in user
     const { userhandle, password } = req.body
 
     try {
@@ -106,24 +107,34 @@ function authenticateToken(req, res, next) {
 }
 
 usersRouter.patch('/:userhandle', authenticateToken, async (req, res, next) => {
-    //edit user info
+    //edit users username or profile picture
     const { userhandle } = req.params
-    const { username, password, PFPname } = req.body
-    const updateFields = {}
-
-    if(username) updateFields.username = username
-
-    if(password) updateFields.password = password
-
-    if(PFPname) updateFields.PFPname = PFPname
+    const { username, PFPname } = req.body
 
     try {
 
-        const updatedAccount = await editUserInfo({userhandle, updateFields})
+        const updatedUserInfo = {}
+        
+        const takenUsername = await getUserByUsername(username)
+        if(takenUsername !== "no user") {
+            return res.status(400).send({ error: "This username is already linked to an account, please choose a different one."})
+        }
 
-        res.send({ message: "You have successfully updated your account!", updatedAccount})
+        if(username !== '') {
+            const updatedUsername = await editUsername(userhandle, username)
 
-    } catch {
+            updatedUserInfo.updatedUsername = updatedUsername
+        }
+
+        if(PFPname !== '') {
+            const updatedPFPname = await editPFPname(userhandle, PFPname)
+
+            updatedUserInfo.updatedPFPname = updatedPFPname
+        }
+        
+        res.send({ message: "You have successfully updated your account!", updatedUserInfo})
+
+    } catch (error) {
         res.status(500).send(genericError)
     }
 
@@ -153,20 +164,6 @@ usersRouter.get("/:userhandle", async (req, res, next) => {
     try {
 
         const user = await getUserByUserhandle(userhandle)
-
-        res.send(user)
-
-    } catch {
-        res.status(500).send(genericError)
-    }
-})
-
-usersRouter.get("/:userId/id", async (req, res, next) => {
-    //get user by id
-    const {userId} = req.params
-    try {
-
-        const user = await getUserById(userId)
 
         res.send(user)
 

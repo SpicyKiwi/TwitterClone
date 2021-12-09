@@ -30,46 +30,48 @@ async function createUser({username, userhandle, password, profilePic}) {
     }
 }
 
-function editUserFields(fields) {
 
-    const insert = Object.keys(fields).map((key, idx) => {
-        return `"${ key }"=$${ idx + 1 }`
-    }).joing(', ')
 
-    const select = Object.keys(fields).map(($, idx) => {
-        return `$${ idx + 1 }`
-    }).join(', ')
-
-    const vals = Object.values(fields)
-    return {insert, select, vals}
-
-}
-
-async function editUserInfo({userhandle, ...fields}) {
+async function editUsername(userhandle, username) {
     try {
 
-        const toUpdate = {}
+        const { rows: [updatedUsername] } = await client.query(`
 
-        for (let column in fields) {
-            if (fields[column] !== undefined) toUpdate[column] = fields[column]
-        }
+            UPDATE users
+            SET username=$1
+            WHERE userhandle=$2
+            RETURNING *;
 
-        let userInfo
+        `, [username, userhandle])  
 
-        if (editUserFields(fields).insert.length > 0) {
-            const { rows: updatedUser } = await client.query(`
-                UPDATE users
-                SET ${editUserFields(toUpdate).insert}
-                WHERE userhandle=${userhandle}
-                RETURNING *;
-            `, Object.values(toUpdate))
-
-            userInfo = updatedUser
-
-            return userInfo
-
-        }
+        return updatedUsername
         
+    } catch (error) {
+        throw error
+    }
+}
+
+async function editPFPname(userhandle, pfpname) {
+    try {
+
+        const { rows: [updatedPFP] } = await client.query(`
+            UPDATE users
+            SET "PFPname"=$1
+            WHERE userhandle=$2
+            RETURNING *;
+
+
+        `, [pfpname, userhandle])
+
+        await client.query(`
+            UPDATE tweets
+            SET "createdAt"="createdAt", "PFPname"=$1
+            WHERE "tweetAuthorHandle"=$2
+            RETURNING *;
+        `, [pfpname, userhandle])
+
+        return updatedPFP
+
     } catch (error) {
         throw error
     }
@@ -141,21 +143,6 @@ async function verifyUser(userhandle, password) {
     }
 }
 
-async function getUserById(userId) {
-    try {
-
-        const { rows: user } = await client.query(`
-            SELECT * FROM users
-            WHERE id=$1;
-        `, [userId])
-
-        return user
-        
-    } catch (error) {
-        throw error
-    }
-}
-
 async function getAllUsers() {
     try {
         
@@ -170,14 +157,33 @@ async function getAllUsers() {
     }
 }
 
+async function getUserByUsername(username) {
+    try {
+
+        const { rows: [user] } = await client.query(`
+            SELECT FROM users
+            WHERE username=$1;
+        `, [username])
+
+        if (user) {
+            return user
+        }
+
+        return "no user"
+
+    } catch (error) {
+        throw error
+    }
+}
 
 
 module.exports = {
     createUser,
-    editUserInfo,
+    editUsername,
     deleteUserByUserhandle,
     getUserByUserhandle,
     verifyUser,
-    getUserById,
-    getAllUsers
+    getAllUsers,
+    getUserByUsername,
+    editPFPname
 }

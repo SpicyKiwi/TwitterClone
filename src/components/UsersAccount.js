@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import Card from 'react-bootstrap/Card'
-import { Link } from 'react-router-dom'
+import { Link, useParams, Redirect } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import LeftNav from './LeftNav'
 
-export default function MyAccount(props) {
+export default function UsersAccount(props) {
+
+    const {UserHandle} = useParams()
 
     const {
         setUserToken,
@@ -19,22 +21,50 @@ export default function MyAccount(props) {
         setOnHomePage
     } = props
 
+
+
     const [tweets, setTweets] = useState([])
     const [comments, setComments] = useState([])
     const [likedTweets, setLikedTweets] = useState([])
     const [section, setSection] = useState('Tweets')
+    const [UserName, setUserName] = useState('')
+    const [UserPFPname, setUserPFPname] = useState('')
+
+    
 
     useEffect(() => {
         setOnHomePage(false)
+        setSection("Tweets")
         fetchUsersTweets()
         fetchUsersComments()
         fetchUsersLikedTweets()
-    }, [])
+        getUserByUserhandle()
+    }, [UserHandle])
+
+    if(UserHandle === userhandle) {
+        return <Redirect to="/my-account" />
+    }
+
+    async function getUserByUserhandle() {
+        try {
+
+            const response = await fetch(`${BASE_URL}/users/${UserHandle}`)
+
+            const data = await response.json()
+            setUserName(data.username)
+            setUserPFPname(data.PFPname)
+
+            return data
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     async function fetchUsersTweets() {
         try {
 
-            const response = await fetch(`${BASE_URL}/tweets/${userhandle}`)
+            const response = await fetch(`${BASE_URL}/tweets/${UserHandle}`)
 
             const data = await response.json()
             setTweets(data)
@@ -49,7 +79,7 @@ export default function MyAccount(props) {
     async function fetchUsersComments() {
         try {
 
-            const response = await fetch(`${BASE_URL}/comments/${userhandle}`)
+            const response = await fetch(`${BASE_URL}/comments/${UserHandle}`)
 
             const data = await response.json()
             setComments(data)
@@ -64,7 +94,7 @@ export default function MyAccount(props) {
     async function fetchUsersLikedTweets() {
         try {
 
-            const response = await fetch(`${BASE_URL}/likes/${userhandle}`)
+            const response = await fetch(`${BASE_URL}/likes/${UserHandle}`)
 
             const data = await response.json()
 
@@ -99,37 +129,6 @@ export default function MyAccount(props) {
 
     }
 
-    async function deleteTweet(id) {
-        try {
-
-            const response = await fetch(`${BASE_URL}/tweets/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${userToken}`
-                },
-                body: JSON.stringify({
-                    userhandle: userhandle
-                })
-            })
-
-            const deletedTweetData = await response.json()
-
-            return deletedTweetData
-            
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async function deleteComment(id) {
-        try {
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
     function renderTweet({id, userName, tweetAuthorHandle, tweetContent, createdAt, PFPname}) {
 
         const day = createdAt.slice(8, 10)
@@ -151,14 +150,7 @@ export default function MyAccount(props) {
                     <Card.Text style={{margin: "1rem"}}>{tweetContent}</Card.Text>
                 
                     <div style={{ marginBottom: "0.5rem", paddingBottom: "0rem", display: "flex", justifyContent: "center", height: "2rem"}}>
-
-                        <button style={{ backgroundColor: "#b81414", color: "white", borderRadius: "1rem", border: "1px solid #131313" }} 
-                        hidden={tweetAuthorHandle === userhandle ? false : true} onClick={async () => {
-                            await deleteTweet(id)
-                            await fetchUsersTweets()
-                        }}> DELETE </button>
                         
-
                     </div>
                 </Card>
             </div>
@@ -197,7 +189,7 @@ export default function MyAccount(props) {
 
 
 
-    function renderComment({id, commentAuthorHandle, userName, commentContent, createdAt}) {
+    function renderComment({id, commentAuthorHandle, userName, tweetId, commentContent, createdAt}) {
 
 
         const day = createdAt.slice(8, 10)
@@ -215,7 +207,7 @@ export default function MyAccount(props) {
     
                         <Card.Text >{commentContent}</Card.Text>
 
-                        <Card.Subtitle style={{opacity: "100%", fontSize: "0.75rem"}}>commented {month}/{day}/{year} at {time} UTC {commentAuthorHandle === userhandle && <button onClick={() => deleteComment(id)} style={{ backgroundColor: "#b81414", color: "white", borderRadius: "1rem", border: "1px solid #131313" }}>Delete Comment</button>} </Card.Subtitle>
+                        <Card.Subtitle style={{opacity: "100%", fontSize: "0.75rem"}}>commented {month}/{day}/{year} at {time} UTC </Card.Subtitle>
 
                     </Card.Body>
                 </Card>
@@ -250,11 +242,11 @@ export default function MyAccount(props) {
                 <div className="MiddleTweets">
                     <Card style={{ height: "100vh", overflow: "auto"}}>
                         <div style={{display: "flex", justifyContent: "space-evenly", borderBottom: "1px solid black"}}>
-                            <img src={`images/${pfpname}.jpg`} alt="profile" style={{ height: "10rem", width: "10rem", borderRadius: "10rem"}}/>
-                            <Link to="/settings" style={{marginTop: "auto", marginBottom: "auto"}}><button style={{ backgroundColor: "transparent", borderRadius: "1rem"}}>Edit Profile</button></Link>
+                            <img src={`images/${UserPFPname}.jpg`} alt="profile" style={{ height: "10rem", width: "10rem", borderRadius: "10rem"}}/>
+                            <button disabled={true} style={{ backgroundColor: "transparent", border: "0"}}></button>
                         </div>
                         <div >
-                            <h3 style={{marginLeft: "2rem"}}>{username} <span style={{opacity: "50%"}}>@{userhandle}</span></h3>
+                            <h3 style={{marginLeft: "2rem"}}>{UserName} <span style={{opacity: "50%"}}>@{UserHandle}</span></h3>
                         </div>
                         <Nav fill variant="tabs" defaultActiveKey="link-1">
                             <Nav.Link eventKey="link-1" onClick={() => setSection("Tweets")}>Tweets</Nav.Link>

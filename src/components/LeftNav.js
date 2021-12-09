@@ -17,7 +17,9 @@ export default function LeftNav(props) {
         userToken,
         userhandle,
         fetchAllTweets,
-        username
+        username,
+        onHomePage,
+        setOnHomePage
     } = props
 
     const [showLogout, setShowLogout] = useState(false)
@@ -35,6 +37,7 @@ export default function LeftNav(props) {
         setUserToken('')
         setUsername('')
         setIsLoggedIn(false)
+        setOnHomePage(false)
         localStorage.clear()
     }
 
@@ -42,10 +45,10 @@ export default function LeftNav(props) {
 
         return (
             <div style={{ position: "fixed", bottom: "13.5rem", marginRight: "-5rem", zIndex: "1" }}>
-                <Alert variant="danger" onClose={() => setShowLogout(false)} dismissible>
+                <Alert variant="light" onClose={() => setShowLogout(false)} dismissible style={{ border: "1px solid black" }}>
                     <Link to="/my-account" style={{textDecoration: "none", color: "#000000"}}>My Account</Link>
                     <hr />
-                    <button onClick={logOut} style={{ border: "0", backgroundColor: "transparent"}}><Image src="images/log_out_icon.png" height="30rem"/>Log Out</button>
+                    <button onClick={logOut} style={{ border: "0", backgroundColor: "#f8d7da", padding: "0.25rem"}}><Image src="images/log_out_icon.png" height="30rem"/>Log Out</button>
                 </Alert>
             </div>
 
@@ -63,7 +66,6 @@ export default function LeftNav(props) {
     async function postTweet() {
         try {
 
-            //authorHandle, tweetContent
             const response = await fetch(`${BASE_URL}/tweets`, {
                 method: "POST",
                 headers: {
@@ -91,7 +93,7 @@ export default function LeftNav(props) {
 
         async function post() {
             await postTweet()
-            await fetchAllTweets()
+            onHomePage && await fetchAllTweets()
             setShowNewTweet(false)
             setTweet('')
         }

@@ -35,7 +35,7 @@ tweetsRouter.get("/", async (req, res, next) => {
 })
 
 tweetsRouter.post("/", authenticateToken, async (req, res, next) => {
-    //create tweet{ authorHandle, tweetContent }
+    //create new tweet
     const {authorHandle, tweetContent, userName, PFPname} = req.body
 
     try {

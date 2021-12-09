@@ -25,6 +25,7 @@ commentsRouter.use((req, res, next) => {
 })
 
 commentsRouter.get("/", async (req, res, next) => {
+    //get all comments
     try {
 
         const allComments = await getAllComments()

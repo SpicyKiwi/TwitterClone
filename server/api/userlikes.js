@@ -21,6 +21,7 @@ userlikesRouter.use((req, res, next) => {
 })
 
 userlikesRouter.get("/", async (req, res, next) => {
+    //gets all of the relationships between users and likes on tweets
     try {
 
         const allLikesOnTweets = await getAllLikesForTweets()
@@ -33,6 +34,7 @@ userlikesRouter.get("/", async (req, res, next) => {
 })
 
 userlikesRouter.get("/:tweetId/tweet", async (req, res, next) => {
+    //gets all like data for tweet by id
     const {tweetId} = req.params
     try {
         
@@ -46,6 +48,7 @@ userlikesRouter.get("/:tweetId/tweet", async (req, res, next) => {
 })
 
 userlikesRouter.get("/:userhandle", async (req, res, next) => {
+    //gets all tweets liked by user
     const {userhandle} = req.params
     try {
 
@@ -59,6 +62,7 @@ userlikesRouter.get("/:userhandle", async (req, res, next) => {
 })
 
 userlikesRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
+    //creates a user and like relationship for a tweet
     const {tweetId} = req.params
     const {userhandle} = req.body
     try {
@@ -73,6 +77,7 @@ userlikesRouter.post("/:tweetId", authenticateToken, async (req, res, next) => {
 })
 
 userlikesRouter.delete("/:tweetId", authenticateToken, async (req, res, next) => {
+    //removes the like data
     const {tweetId} = req.params
     const {userhandle} = req.body
     try{

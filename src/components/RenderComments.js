@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Card from 'react-bootstrap/Card'
+import { Link } from 'react-router-dom'
 
 
 export default function RenderComments(props) {
@@ -15,18 +16,13 @@ export default function RenderComments(props) {
     } = props
 
     const {
-        id, userName, commentAuthorHandle, tweetId, commentContent, createdAt
+        id, userName, commentAuthorHandle, commentContent, createdAt
     } = comment
-
-    console.log("THIS ONE!!! ", showComments)
 
     const day = createdAt.slice(8, 10)
     const month = createdAt.slice(5, 7)
     const year = createdAt.slice(0, 4)
     const time = createdAt.slice(11, 16)
-
-    //const {commentId} = req.params
-    //const {userhandle} = req.body
 
     async function deleteComment() {
         try {
@@ -43,7 +39,6 @@ export default function RenderComments(props) {
             })
 
             const data = await response.json()
-            console.log("del comm", data)
 
             return data
 
@@ -65,7 +60,7 @@ export default function RenderComments(props) {
                 <div style={{border: "1px solid #131313", height: "2rem", width: "0rem"}}></div>
                 <Card style={{ backgroundColor: "#d4d4d4", maxWidth: "75%"}}>
                     <Card.Body>
-                        <Card.Title> {userName} <span style={{opacity: "50%"}}>@{commentAuthorHandle}</span> <br />said:</Card.Title>
+                        <Card.Title>{userhandle === commentAuthorHandle ? "I " : <Link to={`/${commentAuthorHandle}`} style={{textDecoration: "none", color: "black"}}>{userName} <span style={{opacity: "50%"}}>@{commentAuthorHandle}</span> <br /> </Link>}said:</Card.Title>
     
     
                         <Card.Text >{commentContent}</Card.Text>

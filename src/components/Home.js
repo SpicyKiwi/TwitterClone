@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Card from 'react-bootstrap/Card'
 import Alert from 'react-bootstrap/Alert'
 import FormControl from 'react-bootstrap/FormControl'
 import './LeftNav.css'
 import LeftNav from './LeftNav'
+import SearchBox from './SearchBox'
 import RenderComments from './RenderComments'
 
 
@@ -17,7 +19,9 @@ export default function Home(props) {
         username,
         setUsername,
         pfpname,
-        userhandle
+        userhandle,
+        onHomePage,
+        setOnHomePage
     } = props
 
     const [tweets, setTweets] = useState([])
@@ -36,7 +40,7 @@ export default function Home(props) {
         fetchLikedTweets()
         fetchNumberOfLikes()
         fetchAllComments()
-
+        setOnHomePage(true)
     }, [])
 
     async function fetchAllComments() {
@@ -47,7 +51,6 @@ export default function Home(props) {
             const data = await response.json()
             setComments(data)
 
-            console.log("comments: ", data)
             return data
 
 
@@ -83,7 +86,7 @@ export default function Home(props) {
             return data
 
         } catch (error) {
-            throw error
+            console.error(error)
         }
     }
 
@@ -93,6 +96,7 @@ export default function Home(props) {
             const response = await fetch(`${BASE_URL}/tweets`)
 
             const data = await response.json()
+            data.sort((tweet, nextTweet) => tweet.id - nextTweet.id)
             setTweets(data)
 
             return data
@@ -161,12 +165,11 @@ export default function Home(props) {
             })
 
             const deletedTweetData = await response.json()
-            console.log(deletedTweetData)
 
             return deletedTweetData
             
         } catch (error) {
-            throw error
+            console.error(error)
         }
     }
 
@@ -188,7 +191,6 @@ export default function Home(props) {
 
 
         const commentsForTweet = comments.filter(comment => comment.tweetId === id)
-        console.log("comments for tweet", commentsForTweet)
 
         const day = createdAt.slice(8, 10)
         const month = createdAt.slice(5, 7)
@@ -215,9 +217,11 @@ export default function Home(props) {
             <div >
                 <Card style={{ border: "1px solid #bababa", margin: "0.5rem", display: "flex" }}>
                     <Card.Title>
+                        <Link to ={`/${tweetAuthorHandle}`} style={{textDecoration: "none", color: "black"}}>
                         <img src={`images/${PFPname}.jpg`} alt="Profile" style={{ marginLeft: "0.5rem", marginTop: "0.5rem", height: "3rem", width: "3rem", borderRadius: "3rem"}}/> 
                         <span style={{fontWeight: "bolder", marginLeft: "0.25rem"}}>{userName}</span>
                         <span style={{ marginLeft: "0.5rem", opacity: "50%" }}>@{tweetAuthorHandle}</span>  
+                        </Link>
                     </Card.Title>
 
                     <Card.Subtitle style={{marginLeft: "0.5rem"}}>posted {month}/{day}/{year} at {time} UTC</Card.Subtitle>
@@ -231,10 +235,8 @@ export default function Home(props) {
                         <button 
                         onClick={() => {
                             if(showComments.includes(id)) {
-                                console.log("showCom before splice", showComments)
                                 const index = showComments.indexOf(id)
                                 showComments.splice(index, 1)
-                                console.log("showCom After splice: ", showComments)
                                 return setShowComments(showComments => [...showComments])
                             } else {
                                 setShowComments(showComments => [...showComments, id])
@@ -299,8 +301,7 @@ export default function Home(props) {
                 })
             })
 
-            const data = response.json()
-            console.log("posted Comment", data)
+            const data = await response.json()
 
             return data
 
@@ -318,10 +319,10 @@ export default function Home(props) {
         setNewComment('')
     }
 
-    const greetUsername = username.charAt(0).toUpperCase() + username.slice(1)
+    
 
     return (
-        <div className="homepage background" style={{ position: "relative", backgroundColor: "#131313", alignItems: "center", justifyContent: "center", display: "flex", flexDirection: "column"}}>
+        <div className="homepage background" style={{ height: "100vh", overflow: "auto", position: "relative", backgroundColor: "#131313", alignItems: "center", justifyContent: "center", display: "flex", flexDirection: "column"}}>
 
             <div className="homepage main-screen" style={{width: "78%", display: "grid", gridTemplateColumns: "2fr 19fr 11fr"}}>
 
@@ -338,12 +339,14 @@ export default function Home(props) {
                 BASE_URL={BASE_URL}
                 fetchAllTweets={fetchAllTweets}
                 username={username}
+                onHomePage={onHomePage}
+                setOnHomePage={setOnHomePage}
                 />
 
                 </div>
 
-                <div className="MiddleTweets" style={{backgroundColor: "#ededed"}}>
-                    <h1 style={{ margin: "0.5rem", textAlign: "center"}}>Top'a the mornin to ya {greetUsername}!</h1>
+                <div className="MiddleTweets" style={{ height: "100vh", overflow: "auto", backgroundColor: "#ededed"}}>
+                    <h1 style={{ margin: "0.5rem", textAlign: "center"}}>Top'a the mornin to ya {username}!</h1>
 
                     { showNewComment ? 
                     <Alert variant="light" style={{position: "fixed", zIndex: "1", left: "18%", top: "3rem", width: "40%", border: "1px solid black"}} onClose={() => {
@@ -372,7 +375,9 @@ export default function Home(props) {
                 </div>
 
                 <div className="RightSideSearchAndSuggestedAccounts">
-                    <Card>Search and suggestions</Card>
+                    <SearchBox 
+                        BASE_URL={BASE_URL}
+                    />
                 </div>
                 
             </div>

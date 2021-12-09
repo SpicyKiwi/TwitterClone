@@ -26,7 +26,6 @@ export default function SignUpBox(props) {
     const history = useHistory()
 
     async function attemptSignup(username, _userhandle, password, profilePic) {
-        //username, userhandle, password, profilePic
         const userhandle = _userhandle.toLowerCase()
         try {
 
@@ -45,7 +44,6 @@ export default function SignUpBox(props) {
     
             const data = await response.json()
     
-            console.log("Registration Data: ", data)
             return data
 
         } catch (error) {
@@ -55,18 +53,14 @@ export default function SignUpBox(props) {
     }
 
     async function handleSignUp(e) {
-        //attempt sign up
         e.preventDefault()
 
         setError('')
-        console.log(userhandle, username, password, confirmPassword)
         if(!userhandle) return setError("Must have userhandle")
 
         if(userhandle.includes(' ')) return setError("Userhandle cannot contain spaces")
 
         if(!username) return setError("Must have username")
-
-        if(username.includes(' ')) return setError("Username cannot contain spaces")
 
         if(!password) return setError("Must have a password")
 
@@ -89,8 +83,6 @@ export default function SignUpBox(props) {
         setpfpname(response.userInfo.PFPname)
         setUserToken(response.token)
         setIsLoggedIn(true)
-
-        console.log("handleSignup Response: ", response)
 
         const success = false
 

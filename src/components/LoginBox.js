@@ -47,7 +47,6 @@ export default function LoginBox(props) {
     }
 
     async function handleLogIn(e) {
-        //attempt to log in
         e.preventDefault()
 
         if(!userhandle) return setError("Userhandle is missing")
@@ -57,8 +56,6 @@ export default function LoginBox(props) {
         const response = await attemptLogIn(userhandle, password)
 
         if(response.error) return setError(response.error)
-
-        console.log("theResponse", response)
 
         localStorage.setItem("userToken", response.token)
         localStorage.setItem("username", response.userInfo.username)

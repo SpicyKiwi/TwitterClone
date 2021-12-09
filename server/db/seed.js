@@ -44,7 +44,7 @@ async function createTables() {
 
         CREATE TABLE tweets(
             id SERIAL PRIMARY KEY,
-            "userName" VARCHAR(255) REFERENCES users(username),
+            "userName" VARCHAR(255) REFERENCES users(username) ON UPDATE CASCADE,
             "tweetAuthorHandle" VARCHAR(255) REFERENCES users(userhandle),
             "tweetContent" VARCHAR(280) NOT NULL,
             "PFPname" VARCHAR(255) NOT NULL,
@@ -54,7 +54,7 @@ async function createTables() {
         CREATE TABLE comments(
             id SERIAL PRIMARY KEY,
             "commentAuthorHandle" VARCHAR(255) REFERENCES users(userhandle),
-            "userName" VARCHAR(255) REFERENCES users(username),
+            "userName" VARCHAR(255) REFERENCES users(username) ON UPDATE CASCADE,
             "tweetId" INTEGER REFERENCES tweets(id),
             "commentContent" VARCHAR(280) NOT NULL,
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -68,6 +68,8 @@ async function createTables() {
         );
 
         `)
+
+        console.log("Finished building tables!")
     } catch (error) {
         console.error('Error creating tables!')
         console.error('The error: ', error)
@@ -98,7 +100,7 @@ async function createInitialUsers() {
 }
 
 async function createInitialTweets() {
-    console.log("Tweeters are tweeting their tweets...")
+    console.log("Tweeters are tweeting...")
     try {
 
         const tweetsToCreate = [

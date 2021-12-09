@@ -3,14 +3,12 @@ const client = require('./client')
 async function likeTweet({userhandle, tweetId}) {
 
     try {
-        console.log("userhandle: ", userhandle)
-        console.log("tweetId: ", tweetId)
+
         const { rows: [likedTweet] } = await client.query(`
             INSERT INTO userlikes(userhandle, "tweetId")
             VALUES($1, $2)
             RETURNING *;
         `, [userhandle, tweetId])
-        console.log("liked tweet: ", likedTweet)
 
         return likedTweet
         
