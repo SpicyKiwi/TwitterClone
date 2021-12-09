@@ -21,7 +21,7 @@
   },
   "scripts": {
     "seed:dev": "nodemon ./server/db/seed.js",
-    "start:dev": "nodemon ./server/index.js",
+    "start:server": "node ./server/index.js",
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
