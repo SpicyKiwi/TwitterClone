@@ -10,7 +10,7 @@ import UsersAccount from "./UsersAccount";
 
 function App() {
 
-    const BASE_URL = 'http://localhost:3000/api'
+    const BASE_URL = 'https://tweeter-by-farhan.herokuapp.com/api'
     const [userToken, setUserToken] = useState(localStorage.getItem("userToken"))
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn"))
     const [username, setUsername] = useState(localStorage.getItem("username"))
