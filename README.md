@@ -1,15 +1,12 @@
 # Farhan's Twitter clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## This project is a clone of twitter
 
 
 ## Link to deployed site
 
-**Note: Under Construction. Check again later for the deployed link!**
-
-Please click [here]()
+Please click [here](https://twitter-clone-369.netlify.app/)
 
 ## Try it out on your local machine
 
