@@ -14,6 +14,6 @@ Please click [here](https://twitter-clone-369.netlify.app/)
 
 Using ubuntu, run `sudo service postgresql start` to initiate the postgres database.
 
-Switch to your VS Code and run `npm install` to install the required packages. After installing the packages, run `npm start` to allow the front end to begin opening up. While this is opening, run `npm run seed:dev` to create the seed data. Once the seed data is finished, run `start:dev` to begin running the server.
+Switch to your VS Code and run `npm install` to install the required packages. After installing the packages, run `npm start` to allow the front end to begin opening up.
 
-After you begin running the server and the front end opens up a page on your localhost:3000, you should now be able to access the website.
+After the front end opens up a page on your localhost:3000, you should now be able to access the website which will be linked to a heroku server containing the PostgreSQL database.
